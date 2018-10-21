@@ -7,6 +7,8 @@ import 'mint-ui/lib/style.css'
 import Index from "./views/index/index.vue"
 import Film from "./views/film/film.vue"
 
+import FilmDetail from "./views/film/film-detail.vue"
+
 // 引入路由
 import VueRouter from "vue-router"
 
@@ -20,7 +22,8 @@ Vue.config.productionTip = false
 // 定义路由配置
 const routes = [
   { path:"/", component: Index},
-  { path: "/film", component: Film }
+  { path: "/film", component: Film},
+  { path:"/film-detail",component:FilmDetail}
 ]
 
 // 注册路由

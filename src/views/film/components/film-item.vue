@@ -1,5 +1,6 @@
 <template>
-    <div class="hot-item">
+    <router-link to="film-detail">
+    <div class="hot-item"  >
             <img src="https://p1.meituan.net/128.180/movie/740bd990e4af29d537ce324ec2cd08d6300433.jpg" >
 
             <div class="hot-item-right">
@@ -15,6 +16,7 @@
                 <button v-if="isHot===true">购票</button>
             </div>
         </div>
+    </router-link>
 </template>
 
 <script>
