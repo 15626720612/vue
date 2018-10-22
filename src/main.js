@@ -23,7 +23,7 @@ Vue.config.productionTip = false
 const routes = [
   { path:"/", component: Index},
   { path: "/film", component: Film},
-  { path:"/film-detail",component:FilmDetail}
+  { path:"/film-detail/:id",component:FilmDetail}
 ]
 
 // 注册路由

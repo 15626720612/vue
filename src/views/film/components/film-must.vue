@@ -7,15 +7,15 @@
         <div class="film-top-list">
             <div class="film-top-content">
                 <div class="film-top-item" v-for="(item,key) in topItems" :key="key">
-                    <img src="https://p1.meituan.net/128.180/movie/a05a03a1b1b6c678eb7ef73a8347f4682641527.jpg" >
+                    <img :src="item.img" >
                     <div class="top-item-star">
-
+                        
                     </div>
                     <div class="top-item-imgText" >
-                        123123想看
+                        ❤{{item.wish}}想看
                     </div>
-                    <div class="top-item-title">李嘿嘿嘿龙~~~~</div>
-                    <p class="top-item-date">10月29日</p>
+                    <div class="top-item-title">{{item.nm}}</div>
+                    <p class="top-item-date">{{item.rt}}</p>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 10月26号 周五
             </div>
             <div class="must-list-wrapper" >
-                <FilmItem :isHot="false" v-for="(item,key) in topItems" :key="key" ></FilmItem>
+                 <FilmItem :isHot="false" v-for="(item,key) in FilmItem" :key="key" :data="item" ></FilmItem>
             </div>
         </div>
 
@@ -34,15 +34,42 @@
 </template>
 <script>
 import FilmItem from"./film-item.vue"
+import axios from 'axios'
 export default {
     data: ()=>{
         return{
-            topItems:[1,1,1,1,1,1,1]
+            topItems:[],FilmItem:[]
         }
     },
     components: {
         FilmItem
+    },
+    mounted: function(){
+        axios.get("/ajax/mostExpected?ci=20&limit=10&offset=0&token=")
+        .then((res) =>{
+            let {coming} = res.data;
+            //对图片地址进行处理
+            coming = coming.map((v) => {
+                v.img = v.img.replace("w.h","128.180");
+                return v;
+            })
+            this.topItems = coming;
+        });
+
+        //下面的列表
+        axios.get("/ajax/comingList?ci=20&token=&limit=10")
+        .then((res) =>{
+            let {coming} = res.data;
+            //对图片地址进行处理
+            coming = coming.map((v) => {
+                v.img = v.img.replace("w.h","128.180");
+                return v;
+            })
+            this.FilmItem = coming;
+        });
+
     }
+
 }
 </script>
 <style>
@@ -64,7 +91,9 @@ export default {
     }
     .film-top-item img{
         display: block;
-        width: 100%;
+        /* width: 100%; */
+        width: 85px;
+        height: 115px;
     }
     .film-top-star{
         position: absolute;
@@ -77,6 +106,7 @@ export default {
         text-align: center;
         line-height: 28px;
         border-radius: 0 0 10px 0;
+        top: 101px;
     }
     .top-item-imgText{
         background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,1));
@@ -89,7 +119,9 @@ export default {
         top: 101px;
         width: 100%;
         text-align: center;
-        font-weight: bold;
+        font-weight: none;
+
+        display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;
     }
     .top-item-title{
         overflow: hidden;

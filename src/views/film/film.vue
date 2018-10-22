@@ -65,6 +65,7 @@ export default {
     .film-head{
         position: fixed;
         width: 100%;
+        z-index: 9;
     }
     .film-content{
         padding-top: 102px; 
@@ -78,6 +79,7 @@ export default {
         background: #06c1ae; 
         border-bottom: 1px #666 solid;
         font-size: 18px;
+        
     }
     .film-tabs{
         height: 50px;

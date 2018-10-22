@@ -1,19 +1,21 @@
 <template>
-    <router-link to="film-detail">
+    <router-link :to="/film-detail/+this.data.id">
     <div class="hot-item"  >
-            <img src="https://p1.meituan.net/128.180/movie/740bd990e4af29d537ce324ec2cd08d6300433.jpg" >
+            <img :src="this.data.img" >
 
             <div class="hot-item-right">
 
                 <div class="hot-item-info">
-                    <h4>电影名</h4>
-                    <p>观众评 <span>9.0</span></p>
-                    <p>主演: 周润发,郭富城,张静初</p>
-                    <p>今天182家影院放映2218场</p>
+                    <h4>{{this.data.nm}}</h4>
+                    <p v-if="this.data.sc!==0">观众评 <span>{{this.data.sc}}</span></p>
+                    <p v-if="this.data.sc===0"> <span>{{this.data.wish}}</span>想看</p>
+                    <p>主演: {{this.data.star}}</p>
+                    <p>{{this.data.showInfo}}</p>
                 </div>
 
-                <button v-if="isHot===false" class="bg-bule">预售</button>
-                <button v-if="isHot===true">购票</button>
+                <button v-if="this.data.showst===4" class="bg-bule">预售</button>
+                <button v-if="this.data.showst===3">购票</button>
+                <button v-if="this.data.showst===1" class="bg-yellow">想看</button>
             </div>
         </div>
     </router-link>
@@ -21,7 +23,7 @@
 
 <script>
 export default {
-    props:["isHot"]
+    props:["data"]
 }
 </script>
 
@@ -50,12 +52,18 @@ export default {
     align-items: center;
     border-bottom: 1px #eee solid;
     padding-bottom: 10px;
+    
 }
-
+.hot-item-info{
+    width: 70%;
+    overflow: hidden;
+}
 .hot-item-info p{
     font-size: 13px;
     line-height: 1.8;
     color:#666;
+    /* 超出后隐藏 */
+    display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;
 }
 
 .hot-item-info p span{
@@ -74,7 +82,10 @@ export default {
     margin-right: 20px;
 }
 .hot-item-right .bg-bule{
-    background: blue;
+    background:#33CCFF;
+}
+.hot-item-right .bg-yellow{
+    background: orange;
 }
 </style>
 

@@ -1,22 +1,23 @@
 <template>
     <div>
         <div class="detail-header">
-            无双
+            <span @click="handleBack"></span>
+            {{this.detail.nm}}
         </div>
         <div class="detail-info">
-            <img class="detail-info-bg" src="http://p0.meituan.net/148.208/movie/238de53af8fd65ed76fea870cfc6a260287400.jpg">
+            <img class="detail-info-bg" :src="this.detail.img">
             <!-- 详情内容 -->
             <div class="detail-content">
-                <img src="http://p0.meituan.net/148.208/movie/238de53af8fd65ed76fea870cfc6a260287400.jpg">
+                <img :src="this.detail.img">
             <div class="detail-content-right">
-                <h4>我的间谍男友</h4>
+                <h4>{{this.detail.nm}}</h4>
                 <div class=".detail-en-name">
-                    The Spy Who Dumped Me
+                    {{this.detail.enm}}
                 </div>
-                <p><span>8.2</span>{1.4万人评分}</p>
-                <p>美剧</p>
-                <p>美国/117分钟</p>
-                <p>2018-10-19大陆上映</p>
+                <p><span>{{this.detail.sc}}</span>({{this.detail.snum}}人评分)</p>
+                <p>{{this.detail.cat}}</p>
+                <p>{{this.detail.src}}/{{this.detail.dur}}分钟</p>
+                <p>{{this.detail.pubDesc}}</p>
             </div>
             </div>
         </div>
@@ -24,7 +25,7 @@
         <div class="detail-date-wrapper">
             <div class="detail-date-list">
                 <div class="detail-date-item" v-for="(item,key) in dates" :key="key">
-                    {{item}}
+                    {{item.date}}
                 </div>
             </div>
         </div>
@@ -43,22 +44,21 @@
         <!-- 电影院列表 -->
         <div class="film-address-list">
             <div class="film-address-item" v-for="(item,key) in dates" :key="key">
-                <h4>中影JAJ24万达影城 <span>20 <i>元起</i></span></h4>
+                <h4>{{item.nm}} <span>{{item.sellPrice}}<i>元起</i></span></h4>
                 <div class="address-bar">
                     <div class="address-bar-right">
-                        增城区永宁街新城中路24号楼
+                        {{item.addr}}
                     </div>
-                    <p>20km</p>
+                    <p>{{item.distance}}</p>
                 </div>
                 <div class="address-tags">
-                    <span class="yellow">折扣卡</span>
-                    <span class="cyen">巨幕厅</span>
+                    <span class="yellow" v-for="(tag,key) in item.tag.hallType" :key="key">{{tag}}</span>
                 </div>
                 <p class="address-action">
-                    开卡优惠,首单两张立减20元
+                    {{item.promotion.ardPromotionTag}}
                 </p>
                 <p class="address-action">
-                    近期场次:10:35|12.10
+                    近期场次:{{item.showTimes}}
                 </p>
             </div>
         </div>
@@ -66,19 +66,55 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
+    methods: {
+        handleBack: function(){
+            window.history.back();
+        }
+    },
     data: ()=>{
         return{
-            dates:[
-                "今天10月12日",
-                "明天10月13日",
-                "后天10月14日",
-                "周三10月15日",
-                "周四10月16日",
-                "周五10月17日",
-                "周六10月18日",
-            ]
+            dates:[],
+            detail: {}
         }
+    },
+    mounted: function(){
+        //每次进入页面都滚动到最顶部
+        window.scrollTo(0,0);
+        // console.log(this.$route)
+        const id = this.$route.params.id;
+        const url = "/ajax/detailmovie?movieId=" + id;
+
+        axios.get(url).then((res) => {
+            const {detailMovie} = res.data;
+            detailMovie.img = detailMovie.img.replace("w.h","148.208");
+            this.detail = detailMovie;
+        })
+
+        //请求电影院列表
+        axios.post("/ajax/movie?forceUpdate=1540178955893",{
+            movieId: 342166,
+            day: "2018-10-22",
+            offset: 0,
+            limit: 20,
+            districtId: -1,
+            lineId: -1,
+            hallType: -1,
+            brandId: -1,
+            serviceId: -1,
+            areaId: -1,
+            stationId: -1,
+            updateShowDay: true,
+            reqId: 1540178952872,
+            cityId: 20,
+        }).then(res =>{
+            const {showDays,cinemas}=res.data;
+            //初始化dates
+            this.dates = showDays.dates;
+            //初始化电影院列表
+            this.dates = cinemas;
+        })
     }
 }
 </script>
@@ -108,6 +144,20 @@ export default {
         position: absolute; 
         left: 15px;
         top: 50%;
+        margin-top: -8px;
+    }
+    .detai-header span{
+        display: block;
+        content: "";
+        width:15px;
+        height: 15px;
+        border-bottom: 2px #fff solid;
+        border-left:2px #fff solid;
+        transform: rotate(45deg);
+
+        position: absolute;
+        left:15px;
+        top:50%;
         margin-top: -8px;
     }
     /* 电影详情 */

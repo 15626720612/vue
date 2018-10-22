@@ -1,21 +1,34 @@
 <template>
     <div class="hot-list">
-        <FilmItem :isHot="true" v-for="(item,key) in hotFilms" :key="key"></FilmItem>
+        <FilmItem  v-for="(item,key) in hotFilms" :key="key" :data="item"
+        ></FilmItem>
     </div>
 </template>
 
 <script>
 
 import FilmItem from"./film-item.vue"
-
+import axios from 'axios'
 export default {
     data:() =>{
         return {
-            hotFilms:[1,1,1,1,1,1,1,1]
+            hotFilms:[]
         }
     },
     components: {
         FilmItem
+    },
+    mounted:function(){
+        axios.get("/ajax/movieOnInfoList?token=")
+        .then((res) => {
+            let {movieList} = res.data;
+            //对图片地址进行处理
+            movieList = movieList.map((v) => {
+                v.img = v.img.replace("w.h","128.180");
+                return v;
+            })
+            this.hotFilms = movieList;
+        })
     }
 }
 </script>
