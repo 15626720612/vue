@@ -24,7 +24,12 @@
         <!-- 日期选择 -->
         <div class="detail-date-wrapper">
             <div class="detail-date-list">
-                <div class="detail-date-item" v-for="(item,key) in dates" :key="key">
+
+                <div class="detail-date-item" 
+                v-for="(item,key) in dates" 
+                :key="key"
+                :class="{active: currentDate === key}"
+                @click="handleDateChange(key)">
                     {{item.date}}
                 </div>
             </div>
@@ -43,7 +48,7 @@
         </div>
         <!-- 电影院列表 -->
         <div class="film-address-list">
-            <div class="film-address-item" v-for="(item,key) in dates" :key="key">
+            <div class="film-address-item" v-for="(item,key) in address" :key="key">
                 <h4>{{item.nm}} <span>{{item.sellPrice}}<i>元起</i></span></h4>
                 <div class="address-bar">
                     <div class="address-bar-right">
@@ -67,16 +72,22 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
     methods: {
         handleBack: function(){
             window.history.back();
+        },
+        handleDateChange: function(index){
+            this.currentDate = index;
         }
     },
     data: ()=>{
         return{
             dates:[],
-            detail: {}
+            address:[],
+            detail: {},
+            currentDate:0
         }
     },
     mounted: function(){
@@ -93,9 +104,9 @@ export default {
         })
 
         //请求电影院列表
-        axios.post("/ajax/movie?forceUpdate=1540178955893",{
-            movieId: 342166,
-            day: "2018-10-22",
+        axios.post("/ajax/movie?forceUpdate=1540275365380",{
+            movieId: id,
+            day: moment().format('YYYY-MM-DD'), //获取当天的时间
             offset: 0,
             limit: 20,
             districtId: -1,
@@ -106,14 +117,14 @@ export default {
             areaId: -1,
             stationId: -1,
             updateShowDay: true,
-            reqId: 1540178952872,
+            reqId: 1540177250401,
             cityId: 20,
         }).then(res =>{
             const {showDays,cinemas}=res.data;
             //初始化dates
             this.dates = showDays.dates;
             //初始化电影院列表
-            this.dates = cinemas;
+            this.address = cinemas;
         })
     }
 }
@@ -241,6 +252,10 @@ export default {
     .detail-date-item{
         width: 115px;
         flex-shrink: 0;
+    }
+    .detail-date-item.active{
+        color:red;
+        border-bottom:2px red solid;
     }
     /* 条件选择 */
     .detail-condition{

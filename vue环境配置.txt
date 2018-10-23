@@ -1,0 +1,20 @@
+1. 下载nodejs
+
+http://nodejs.cn/download/
+
+2. 全局安装vue-cli
+
+npm install -g @vue/cli
+
+3. 创建项目
+
+vue create app
+
+4. 打开项目 
+
+cd app &&  npm run serve
+
+
+5. 可以使用yarn代替npm, 先全局安装yarn
+
+npm install -g yarn
